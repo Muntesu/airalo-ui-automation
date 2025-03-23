@@ -3,6 +3,7 @@ package com.airalo.runner;
 
 import static com.airalo.configuration.ConfigurationManager.config;
 import static com.airalo.logger.LoggerManager.logInfo;
+import static com.airalo.util.WebWait.waitForUrlToBe;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.airalo.page_object.LoginPage;
@@ -13,40 +14,16 @@ import org.javamoney.moneta.Money;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-//
-//      Act for the user located in both japan and outside japan - suggestion
-//      1. Open the https://www.airalo.com/ page
-//      2. Check menu :partner with us, about us, login/logout,
-//      3. Check the page title
-//      ... other checks may be required to assure the page was loaded
-//      4. Check the search is present
-//      5. Type the country name (generic)
-//      6. Check the country is available in dropdown
-//      7. Click the country name
-//      8. Check the page url has changed, and it follows
-//           the https://www.airalo.com/{country_name}-esim pattern
-//      9. Check the local eSIMs tab is selected
-//      10. Check there is a list of available packages for Japan displayed below
-//      11. Select the package for 1 GB
-//      12. Click the Buy now button
-//      13. Check the url has changed, and it contains both country name and the selected option
-//      14. Check the main card has same Coverage, Data, Validity and Price as on the previously selected card
-//      15. Scroll down
-//      16. Check the price is the same as on card
-//      17. Check buy button is present and clickable
-//      18. Click buy button
-//      19. Check user is redirected to login page
-//      20. Check url
-//      21. Check Login form is present
+public class BuyPackageTest extends BaseTest {
 
-public class TestBuyPackage extends BaseTest {
-
-    @Test(dataProvider = "countries")
+    @Test(groups = "buy", dataProvider = "countries")
     public void buyRandomPackage(String coverage, String data, String validity, Double price) {
         createTest("Airalo Search Test");
         logInfo("Starting Buy Random Package test");
 
         MainPage mainPage = new MainPage(DriverFactory.getDriver());
+
+        logInfo("Opened the main page on " + mainPage.getCurrentUrl());
 
         try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
             softly.assertThat(mainPage.getNavigationMenu().isPartnerWithUsDisplayed())
@@ -89,21 +66,25 @@ public class TestBuyPackage extends BaseTest {
 
         aPackage.clickBuyPackage();
 
-        var packageCard =  mainPage.getPackageCard();
+        var packageCard = mainPage.getPackageCard();
         var packageCardDTO = mainPage.getPackageCardDTO(packageCard);
 
         assertThat(packageDTO.toString()).as("The packages data does not match")
-                .isEqualTo(packageCardDTO.toString());
+            .isEqualTo(packageCardDTO.toString());
 
         assertThat(mainPage.getCurrentUrl()).as("The page URL doesn't contain country name")
-                .contains(coverage.toLowerCase());
+            .contains(coverage.toLowerCase());
 
         packageCard.clickBuyPackage();
+
+        // TODO temporary workaround as driver keeps the source of previous page
+        waitForUrlToBe(config().loginUrl());
+        mainPage.getDriver().navigate().refresh();
 
         var loginPage = new LoginPage(DriverFactory.getDriver());
         loginPage.isLoaded();
 
-        assertThat(mainPage.getCurrentUrl()).as("The URL didn't change")
+        assertThat(loginPage.getCurrentUrl()).as("The URL didn't change")
             .isEqualTo(config().loginUrl());
     }
 

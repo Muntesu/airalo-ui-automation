@@ -1,5 +1,6 @@
 package com.airalo.page_object;
 
+import com.airalo.util.JsExecutor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -10,7 +11,9 @@ public class Package extends GenericPackage {
     }
 
     public void clickBuyPackage() {
-        root.findElement(By.cssSelector("[data-testid=\"esim-button\"]")).click();
+        var buyButton = root.findElement(By.cssSelector("[data-testid=\"esim-button\"]"));
+        JsExecutor.scrollIntoView(buyButton);
+        buyButton.click();
     }
 
 }

@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@AllArgsConstructor
 public enum Browser {
     CHROME("chrome"),
     FIREFOX("firefox"),
@@ -20,6 +18,11 @@ public enum Browser {
     }
 
     private final String driverName;
+
+
+    Browser(String driverName) {
+        this.driverName = driverName;
+    }
 
     public static Browser valueOfLabel(String label) {
         return BY_LABEL.get(label.toLowerCase());

@@ -1,5 +1,6 @@
 package com.airalo.page_object;
 
+import com.airalo.util.JsExecutor;
 import com.airalo.webdriver.DriverFactory;
 import lombok.Getter;
 import org.openqa.selenium.WebDriver;
@@ -12,6 +13,7 @@ public abstract class BasePage {
 
     public BasePage() {
         this.driver = DriverFactory.getDriver();
+        JsExecutor.waitForPageToLoad();
         PageFactory.initElements(driver, this);
     }
 

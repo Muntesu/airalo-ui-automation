@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Buy Test suite" verbose="2">
+
+    <test name="Buy Sim Test">
+        <groups>
+            <run>
+                <include name="buy" />
+            </run>
+        </groups>
+
+        <classes>
+            <class name="com.airalo.runner.BuyPackageTest" />
+        </classes>
+    </test>
+</suite>

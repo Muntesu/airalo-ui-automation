@@ -1,8 +1,8 @@
 package com.airalo.page_object;
 
 import com.airalo.dto.PackageDTO;
+import com.airalo.util.JsExecutor;
 import com.airalo.util.WebWait;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
@@ -54,7 +54,7 @@ public class MainPage extends BasePage {
 
     public PackageCard getPackageCard() {
         var packageDetailSelector = By.cssSelector("[data-testid=\"package-detail\"]");
-        WebWait.untilElementVisible(packageDetailSelector);
+        WebWait.scrollAndWaitUntilElementVisible(packageDetailSelector);
         return new PackageCard(getDriver().findElement(packageDetailSelector));
     }
 

@@ -2,6 +2,7 @@ package com.airalo.page_object;
 
 import static com.airalo.logger.LoggerManager.logError;
 
+import com.airalo.util.JsExecutor;
 import com.airalo.util.WebWait;
 import java.util.List;
 import lombok.Getter;
@@ -27,12 +28,9 @@ public class Search {
     @FindBy(css = ".countries-list.position-absolute")
     private WebElement countriesListContainer;
 
-    @FindBy(className = "countries-list-loader")
-    private WebElement countryLoader;
-
-    private final By countriesListLoader = By.className("countries-list-loader");
-    private final By searchInputLocator = By.cssSelector("[data-testid=\"search-input\"]");
-    private final By countriesList = By.cssSelector(".countries-list.position-absolute");
+    private static final String countriesListLoader = ".countries-list-loader span";
+    private static final By searchInputLocator = By.cssSelector("[data-testid=\"search-input\"]");
+    private static final By countriesList = By.cssSelector(".countries-list.position-absolute");
 
     public Search startCountriesSearch(String country) {
         WebWait.untilElementInteractable(searchInputLocator);
@@ -42,9 +40,9 @@ public class Search {
     }
 
     public Search finishCountriesSearch() {
-        WebWait.untilElementVisible(countriesListLoader);
-        WebWait.untilElementInvisible(countryLoader);
-        WebWait.untilElementVisible(countriesList);
+        WebWait.scrollAndWaitUntilElementVisible(By.cssSelector(countriesListLoader));
+        JsExecutor.waitForLoaderToDisappear(countriesListLoader);
+        WebWait.scrollAndWaitUntilElementVisible(countriesList);
         return this;
     }
 
@@ -52,7 +50,7 @@ public class Search {
         List<WebElement> countries = countriesListContainer.findElements(
             By.cssSelector("[data-testid=\"" + country + "-name\"]"));
         if (!countries.isEmpty()) {
-            countries.getFirst().click();
+            countries.get(0).click();
         } else {
             logError("The country {} was not found in the list", country);
         }

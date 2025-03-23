@@ -20,7 +20,7 @@ import org.openqa.selenium.support.events.EventFiringDecorator;
 
 public class DriverFactory {
 
-    public static final long DRIVER_WAIT_TIME = 5;
+    public static final long DRIVER_WAIT_TIME = 10;
     private static final long SCRIPT_WAIT_TIME = 10;
     private static final long PAGE_LOAD_WAIT_TIME = 15;
 
@@ -72,9 +72,20 @@ public class DriverFactory {
     private static WebDriver startHeadlessDriver() {
         ChromeOptions options = new ChromeOptions();
         setChromeOptions(options);
-        options.addArguments("--headless");
-        options.addArguments("--start-fullscreen");
-        options.addArguments("--disable-popup-blocking"); // Prevent pop-ups
+
+        options.addArguments("--headless=new");
+        options.addArguments("--force-device-scale-factor=1");
+        options.addArguments("--disable-software-rasterizer");
+
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--no-sandbox");
+
+        options.addArguments("--disable-gpu");
+        options.addArguments("--window-size=1920,1080");
+
+        options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+
         return new ChromeDriver(options);
     }
 

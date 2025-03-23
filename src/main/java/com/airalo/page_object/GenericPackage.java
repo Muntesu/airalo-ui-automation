@@ -8,7 +8,7 @@ import org.openqa.selenium.WebElement;
 
 public abstract class GenericPackage {
 
-    protected WebElement root;
+    protected final WebElement root;
 
     public GenericPackage(WebElement root) {
         this.root = root;

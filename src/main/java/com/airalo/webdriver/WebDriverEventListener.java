@@ -4,35 +4,37 @@ import static com.airalo.logger.LoggerManager.logError;
 import static com.airalo.logger.LoggerManager.logInfo;
 import static com.airalo.util.JsExecutor.highlight;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Objects;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverListener;
 
-class WebDriverEventListener implements WebDriverListener {
+public class WebDriverEventListener implements WebDriverListener {
 
-    public void beforeNavigateTo(String url, WebDriver driver) {
+    public void beforeGet(WebDriver driver, String url) {
         logInfo("Navigating to {}", url);
     }
 
-    public void beforeNavigateRefresh(WebDriver driver) {
+    public void beforeRefresh(WebDriver.Navigation refresh) {
         logInfo("Refreshing the page");
     }
 
-    public void beforeClickOn(WebElement element, WebDriver driver) {
+    public void beforeClick(WebElement element) {
         highlight(element);
         logInfo("Clicking on {}", getElementName(element));
     }
 
-    public void beforeChangeValueOf(WebElement element, WebDriver driver,
-        CharSequence[] keysToSend) {
+    public void beforeSendKeys(WebElement element, CharSequence[] keysToSend) {
         highlight(element);
         logInfo("Changing value {} for {}", keysToSend, getElementName(element));
     }
 
-    public void onException(Throwable throwable, WebDriver driver) {
-        logError("Selenium runtime exception: {}", throwable.getClass().getName());
-        logError("Exception message: {}", throwable.getMessage());
+    public void onError(Object target, Method method, Object[] args, InvocationTargetException e) {
+        Throwable cause = e.getCause(); // unwrap the actual exception
+        logError("Selenium error in method {}: {}", method.getName(), cause.getClass().getName());
+        logError("Exception message: {}", cause.getMessage());
     }
 
     private String getElementName(WebElement element) {
