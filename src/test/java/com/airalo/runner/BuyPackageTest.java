@@ -50,7 +50,7 @@ public class BuyPackageTest extends BaseTest {
             .as("The list of packages is empty")
             .isGreaterThan(1);
 
-        var aPackage = mainPage.getPackage((p -> p.getData().equals(data)));
+        var aPackage = mainPage.getPackage((p -> p.getValidity().equals(validity)));
         var packageDTO = mainPage.getPackageDTO(aPackage);
 
         try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions()) {
